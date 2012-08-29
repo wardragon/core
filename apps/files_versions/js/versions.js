@@ -8,31 +8,27 @@ $(document).ready(function() {
         });
 });
 
-$(document).ready(function(){
-	if (typeof FileActions !== 'undefined') {
-		// Add history button to files/index.php
-		FileActions.register('file','History', FileActions.PERMISSION_UPDATE, function(){return OC.imagePath('core','actions/history')},function(filename){
+Versioning={};
 
-			if (scanFiles.scanning){return;}//workaround to prevent additional http request block scanning feedback
+Versioning.showDropdown=function (filename){
+	if (scanFiles.scanning){return;}//workaround to prevent additional http request block scanning feedback
 
-			var file = $('#dir').val()+'/'+filename;
-			// Check if drop down is already visible for a different file
-			if (($('#dropdown').length > 0)) {
-				if (file != $('#dropdown').data('file')) {
-					$('#dropdown').hide('blind', function() {
-						$('#dropdown').remove();
-						$('tr').removeClass('mouseOver');
-						createVersionsDropdown(filename, file);
-					});
-				}
-			} else {
-				createVersionsDropdown(filename, file);
-			}
-		});
+	var file = $('#dir').val()+'/'+filename;
+	// Check if drop down is already visible for a different file
+	if (($('#dropdown').length > 0)) {
+		if (file != $('#dropdown').data('file')) {
+			$('#dropdown').hide('blind', function() {
+				$('#dropdown').remove();
+				$('tr').removeClass('mouseOver');
+				Versioning.createDropdown(filename, file);
+			});
+		}
+	} else {
+		Versioning.createDropdown(filename, file);
 	}
-});
+}
 
-function createVersionsDropdown(filename, files) {
+Versioning.createDropdown=function (filename, files) {
 
 	var historyUrl = OC.linkTo('files_versions', 'history.php') + '?path='+encodeURIComponent( $( '#dir' ).val() ).replace( /%2F/g, '/' )+'/'+encodeURIComponent( filename );
 
@@ -81,7 +77,6 @@ function createVersionsDropdown(filename, files) {
 	});
 
 	function revertFile(file, revision) {
-
 		$.ajax({
 			type: 'GET',
 			url: OC.linkTo('files_versions', 'ajax/rollbackVersion.php'),
@@ -100,7 +95,6 @@ function createVersionsDropdown(filename, files) {
 				}
 			}
 		});
-
 	}
 
 	function addVersion(revision ) {
