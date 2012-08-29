@@ -75,5 +75,13 @@
 	</p>
 </div>
 
+<!-- fileactions export -->
+<script type='application/javascript'>
+$(document).ready(function(){
+	var imports=<?php echo $_['actions']; ?>;
+	FileActions.import(imports.actions, imports.defaults);
+});
+</script>
+
 <!-- config hints for javascript -->
 <input type="hidden" name="allowZipDownload" id="allowZipDownload" value="<?php echo $_['allowZipDownload']; ?>" />

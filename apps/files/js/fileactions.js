@@ -147,6 +147,21 @@ FileActions={
 	},
 	getCurrentPermissions:function() {
 		return FileActions.currentFile.parent().data('permissions');
+	},
+	import:function(actions,defaults){
+		for(var mime in actions){
+			for(var name in actions[mime]){
+				var action=actions[mime][name];
+				FileActions.register(mime,name,action.permissions,action.icon,function(app, script, func, filename){
+					OC.addScript(app,script).done(function(){
+						var action=OC.get(func);
+						if(action){
+							action(filename);
+						}
+					});
+				}.bind(null, action.app, action.script, action.func));
+			}
+		}
 	}
 }
 
