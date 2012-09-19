@@ -147,7 +147,7 @@ class Storage {
 	/**
 	 * check if old versions of a file exist.
 	 */
-	public static function isversioned($filename) {
+	public static function isVersioned($filename) {
 		if(\OCP\Config::getSystemValue('files_versions', Storage::DEFAULTENABLED)=='true') {
 			list($uid, $filename) = self::getUidAndFilename($filename);
 			$versions_fileview = new \OC_FilesystemView('/'.$uid.'/files_versions');

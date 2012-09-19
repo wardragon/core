@@ -42,7 +42,7 @@ class Hooks {
 		$versions_fileview = \OCP\Files::getStorage('files_versions');
 		$rel_path =  $params['path'];
 		$abs_path = \OCP\Config::getSystemValue('datadirectory').$versions_fileview->getAbsolutePath('').$rel_path.'.v';
-		if(Storage::isversioned($rel_path)) {
+		if(Storage::isVersioned($rel_path)) {
 			$versions = Storage::getVersions($rel_path);
 			foreach ($versions as $v) {
 				unlink($abs_path . $v['version']);
@@ -62,7 +62,7 @@ class Hooks {
 		$rel_oldpath =  $params['oldpath'];
 		$abs_oldpath = \OCP\Config::getSystemValue('datadirectory').$versions_fileview->getAbsolutePath('').$rel_oldpath.'.v';
 		$abs_newpath = \OCP\Config::getSystemValue('datadirectory').$versions_fileview->getAbsolutePath('').$params['newpath'].'.v';
-		if(Storage::isversioned($rel_oldpath)) {
+		if(Storage::isVersioned($rel_oldpath)) {
 			$info=pathinfo($abs_newpath);
 			if(!file_exists($info['dirname'])) mkdir($info['dirname'],0700,true);
 			$versions = Storage::getVersions($rel_oldpath);

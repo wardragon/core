@@ -51,7 +51,7 @@ if ( isset( $_GET['path'] ) ) {
 	}
 
 	// show the history only if there is something to show
-        if( OCA\Files_Versions\Storage::isversioned( $path ) ) {
+        if( OCA\Files_Versions\Storage::isVersioned( $path ) ) {
 
 		$count = 999; //show the newest revisions
 	        $versions = OCA\Files_Versions\Storage::getVersions( $path, $count);
