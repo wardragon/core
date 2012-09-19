@@ -12,7 +12,7 @@
  * A class to handle the versioning of files.
  */
 
-namespace OCA_Versions;
+namespace OCA\Files_Versions;
 
 class Storage {
 
