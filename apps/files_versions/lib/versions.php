@@ -192,6 +192,7 @@ class Storage {
 
 			$files_view = new \OC_FilesystemView('/'.$uid.'/files');
 			$local_file = $files_view->getLocalFile($filename);
+			$local_file_md5 = \md5_file( $local_file );
 			foreach( $matches as $ma ) {
 
 				$i++;
@@ -200,7 +201,7 @@ class Storage {
 				$versions[$i]['version'] = ( end( $parts ) );
 
 				// if file with modified date exists, flag it in array as currently enabled version
-				( \md5_file( $ma ) == \md5_file( $local_file ) ? $versions[$i]['fileMatch'] = 1 : $versions[$i]['fileMatch'] = 0 );
+				( \md5_file( $ma ) == $local_file_md5 ? $versions[$i]['fileMatch'] = 1 : $versions[$i]['fileMatch'] = 0 );
 
 			}
 
