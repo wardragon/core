@@ -24,7 +24,7 @@ class Hooks {
 			$path = $params[\OC_Filesystem::signal_param_path];
 
 			if($path<>'') {
-				OCA\Files_Versions\Storage::store( $path );
+				Storage::store( $path );
 			}
 
 		}
