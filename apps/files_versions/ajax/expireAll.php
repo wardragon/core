@@ -29,9 +29,7 @@ OCP\JSON::checkLoggedIn();
 OCP\App::checkAppEnabled('files_versions');
 OCP\JSON::callCheck();
 
-$versions = new OCA\Files_Versions\Storage();
-
-if( $versions->expireAll() ) {
+if( OCA\Files_Versions\Storage::expireAll() ) {
 
 	OCP\JSON::success();
 	die();

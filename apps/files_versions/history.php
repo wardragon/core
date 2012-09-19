@@ -30,12 +30,11 @@ if ( isset( $_GET['path'] ) ) {
 	$path = $_GET['path'];
 	$path = $path;
 	$tmpl->assign( 'path', $path );
-	$versions = new OCA\Files_Versions\Storage();
 
 	// roll back to old version if button clicked
         if( isset( $_GET['revert'] ) ) {
 
-		if( $versions->rollback( $path, $_GET['revert'] ) ) {
+		if( OCA\Files_Versions\Storage::rollback( $path, $_GET['revert'] ) ) {
 
 			$tmpl->assign( 'outcome_stat', 'success' );
 

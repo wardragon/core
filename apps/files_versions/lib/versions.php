@@ -55,7 +55,7 @@ class Storage {
 	/**
 	 * store a new version of a file.
 	 */
-	public function store($filename) {
+	public static function store($filename) {
 		if(\OCP\Config::getSystemValue('files_versions', Storage::DEFAULTENABLED)=='true') {
 			list($uid, $filename) = self::getUidAndFilename($filename);
 			$files_view = new \OC_FilesystemView('/'.$uid.'/files');
@@ -272,7 +272,7 @@ class Storage {
 	 * @brief Erase all old versions of all user files
 	 * @return true/false
 	 */
-	public function expireAll() {
+	public static function expireAll() {
 		$view = \OCP\Files::getStorage('files_versions');
 		return $view->deleteAll('', true);
 	}

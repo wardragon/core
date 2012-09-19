@@ -21,11 +21,11 @@ class Hooks {
 
 		if(\OCP\Config::getSystemValue('files_versions', Storage::DEFAULTENABLED)=='true') {
 
-			$versions = new Storage( new \OC_FilesystemView('') );
-
 			$path = $params[\OC_Filesystem::signal_param_path];
 
-			if($path<>'') $versions->store( $path );
+			if($path<>'') {
+				OCA\Files_Versions\Storage::store( $path );
+			}
 
 		}
 	}
