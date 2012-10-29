@@ -36,6 +36,17 @@
 		<header><div id="header">
 			<a href="<?php echo link_to('', 'index.php'); ?>" title="" id="owncloud"><img class="svg" src="<?php echo image_path('', 'logo-wide.svg'); ?>" alt="ownCloud" /></a>
 
+			<ul id="navigation" class="svg">
+				<?php foreach($_['navigation'] as $entry): ?>
+					<li data-id="<?php echo $entry['id']; ?>">
+						<a href="<?php echo $entry['href']; ?>" title="" <?php if( $entry['active'] ): ?> class="active"<?php endif; ?>>
+							<div class="icon" style="background-image:url(<?php echo $entry['icon']; ?>)"></div>
+							<?php echo $entry['name']; ?>
+						</a>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+
 			<ul id="settings" class="svg">
 				<span id="expand">
 					<?php echo OC_User::getUser()?OC_User::getUser():'' ?>
@@ -62,19 +73,6 @@
 				<input id="searchbox" class="svg" type="search" name="query" value="<?php if(isset($_POST['query'])) {echo OC_Util::sanitizeHTML($_POST['query']);};?>" autocomplete="off" x-webkit-speech />
 			</form>
 		</div></header>
-
-		<nav><div id="navigation">
-			<ul id="apps" class="svg">
-				<?php foreach($_['navigation'] as $entry): ?>
-					<li data-id="<?php echo $entry['id']; ?>">
-						<a href="<?php echo $entry['href']; ?>" title="" <?php if( $entry['active'] ): ?> class="active"<?php endif; ?>>
-							<div class="icon" style="background-image:url(<?php echo $entry['icon']; ?>)"></div>
-							<?php echo $entry['name']; ?>
-						</a>
-					</li>
-				<?php endforeach; ?>
-			</ul>
-		</div></nav>
 
 		<div id="content">
 			<?php echo $_['content']; ?>
