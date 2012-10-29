@@ -56,7 +56,9 @@ class Connection {
 		'ldapUuidAttribute' => null,
 		'ldapOverrideUuidAttribute' => null,
 		'homeFolderNamingRule' => null,
-		'ldapNamingAttribute' => null,
+		'ldapUserSearchFilter' => null,
+		'ldapMinSearchLenght' => null,
+		
 	);
 
 	public function __construct($configID = 'user_ldap') {
@@ -203,7 +205,8 @@ class Connection {
 			$this->config['ldapUuidAttribute']     = \OCP\Config::getAppValue($this->configID, 'ldap_uuid_attribute', 'auto');
 			$this->config['ldapOverrideUuidAttribute'] = \OCP\Config::getAppValue($this->configID, 'ldap_override_uuid_attribute', 0);
 			$this->config['homeFolderNamingRule']  = \OCP\Config::getAppValue($this->configID, 'home_folder_naming_rule', 'opt:username');
-			$this->config['ldapNamingAttribute']  = \OCP\Config::getAppValue($this->configID, 'ldap_naming_attribute', 'uid');
+			$this->config['ldapUserSearchFilter']  = \OCP\Config::getAppValue($this->configID, 'ldap_usersearch_filter', 'uid');
+			$this->config['ldapMinSearchLenght']  = \OCP\Config::getAppValue($this->configID, 'min_lenght_search', 0);
 			
 			$this->configured = $this->validateConfiguration();
 		}
@@ -222,7 +225,7 @@ class Connection {
 
 		$params = array('ldap_host'=>'ldapHost', 'ldap_port'=>'ldapPort', 'ldap_dn'=>'ldapAgentName', 'ldap_agent_password'=>'ldapAgentPassword', 'ldap_base'=>'ldapBase', 'ldap_base_users'=>'ldapBaseUsers', 'ldap_base_groups'=>'ldapBaseGroups', 'ldap_userlist_filter'=>'ldapUserFilter', 'ldap_login_filter'=>'ldapLoginFilter', 'ldap_group_filter'=>'ldapGroupFilter', 'ldap_display_name'=>'ldapUserDisplayName', 'ldap_group_display_name'=>'ldapGroupDisplayName',
 
-		'ldap_tls'=>'ldapTLS', 'ldap_nocase'=>'ldapNoCase', 'ldap_quota_def'=>'ldapQuotaDefault', 'ldap_quota_attr'=>'ldapQuotaAttribute', 'ldap_email_attr'=>'ldapEmailAttribute', 'ldap_group_member_assoc_attribute'=>'ldapGroupMemberAssocAttr', 'ldap_cache_ttl'=>'ldapCacheTTL', 'home_folder_naming_rule' => 'homeFolderNamingRule', 'ldap_naming_attribute' => 'ldapNamingAttribute');
+		'ldap_tls'=>'ldapTLS', 'ldap_nocase'=>'ldapNoCase', 'ldap_quota_def'=>'ldapQuotaDefault', 'ldap_quota_attr'=>'ldapQuotaAttribute', 'ldap_email_attr'=>'ldapEmailAttribute', 'ldap_group_member_assoc_attribute'=>'ldapGroupMemberAssocAttr', 'ldap_cache_ttl'=>'ldapCacheTTL', 'home_folder_naming_rule' => 'homeFolderNamingRule','ldap_usersearch_filter' => 'ldapUserSearchFilter','min_lenght_search' => 'ldapMinSearchLenght');
 
 		foreach($config as $parameter => $value) {
 		    if(isset($this->config[$parameter])) {
@@ -264,8 +267,11 @@ class Connection {
 			\OCP\Config::setAppValue($this->configID, 'ldap_uuid_attribute', 'auto');
 			\OCP\Util::writeLog('user_ldap', 'Illegal value for the UUID Attribute, reset to autodetect.', \OCP\Util::INFO);
 		}
-
-
+		if(empty($this->config['ldapMinSearchLenght'])) {
+			$this->config['ldapMinSearchLenght'] = 0;
+			\OCP\Util::writeLog('user_ldap', 'min Ldap Search Lenght not specified, will be set to default value 0.', \OCP\Util::INFO);
+		}
+		
 		//second step: critical checks. If left empty or filled wrong, set as unconfigured and give a warning.
 		$configurationOK = true;
 		if(empty($this->config['ldapHost'])) {
@@ -303,8 +309,9 @@ class Connection {
 			\OCP\Util::writeLog('user_ldap', 'Login filter was ' . $this->config['ldapLoginFilter'], \OCP\Util::DEBUG);
 			$configurationOK = false;
 		}
-		if(empty($this->config['ldapNamingAttribute'])) {
-			\OCP\Util::writeLog('user_ldap', 'No naming attribute specified, won`t connect.', \OCP\Util::WARN);
+		
+		if(empty($this->config['ldapUserSearchFilter'])) {
+			\OCP\Util::writeLog('user_ldap', 'No user search specified, ldap search could be incomplete.', \OCP\Util::WARN);
 			$configurationOK = false;
 		}
 		

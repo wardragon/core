@@ -59,6 +59,11 @@ class USER_LDAP extends lib\Access implements \OCP\UserInterface {
 			}
 		}
 	}
+	
+	private function createFilter($basefilter, $paramname, $value){
+		$filter = \OCP\Util::mb_str_replace($paramname, $value, $basefilter, 'UTF-8');
+		return $filter;
+	}
 
 	/**
 	 * @brief Check if the password is correct
@@ -104,9 +109,15 @@ class USER_LDAP extends lib\Access implements \OCP\UserInterface {
 	 * Get a list of all users.
 	 */
 	public function getUsers($search = '', $limit = 10, $offset = 0) {
+		
+		if (strlen($search) < $this->connection->ldapMinSearchLenght) return null;
+		
+		$filter=$this->createFilter($this->connection->ldapUserSearchFilter, '%search', $search);
+		
 		$ldap_users = $this->connection->getFromCache('getUsers');
+		$ldap_users = null;
 		if(is_null($ldap_users)) {
-			$ldap_users = $this->fetchListOfUsers($this->connection->ldapUserFilter, array($this->connection->ldapUserDisplayName, 'dn'));
+			$ldap_users = $this->fetchListOfUsers($filter, array($this->connection->ldapUserDisplayName, 'dn'));
 			$ldap_users = $this->ownCloudUserNames($ldap_users);
 			$this->connection->writeToCache('getUsers', $ldap_users);
 		}
@@ -142,8 +153,8 @@ class USER_LDAP extends lib\Access implements \OCP\UserInterface {
 		}
 
 		//if user really still exists, we will be able to read his objectclass
-		$objcs = $this->readAttribute($dn, $this->connection->ldapNamingAttribute);
-		if(!$objcs || empty($objcs)) {
+
+		if(!$this->entryExists($dn) ) {
 			$this->connection->writeToCache('userExists'.$uid, false);
 			return false;
 		}
