@@ -20,7 +20,7 @@
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-$params = array('ldap_host', 'ldap_port', 'ldap_dn', 'ldap_agent_password', 'ldap_base', 'ldap_base_users', 'ldap_base_groups', 'ldap_userlist_filter', 'ldap_login_filter', 'ldap_group_filter', 'ldap_display_name', 'ldap_group_display_name', 'ldap_tls', 'ldap_turn_off_cert_check', 'ldap_nocase', 'ldap_quota_def', 'ldap_quota_attr', 'ldap_email_attr', 'ldap_group_member_assoc_attribute', 'ldap_cache_ttl', 'home_folder_naming_rule');
+$params = array('ldap_host', 'ldap_port', 'ldap_dn', 'ldap_agent_password', 'ldap_base', 'ldap_base_users', 'ldap_base_groups', 'ldap_userlist_filter', 'ldap_login_filter', 'ldap_group_filter', 'ldap_display_name', 'ldap_group_display_name', 'ldap_tls', 'ldap_turn_off_cert_check', 'ldap_nocase', 'ldap_quota_def', 'ldap_quota_attr', 'ldap_email_attr', 'ldap_group_member_assoc_attribute', 'ldap_cache_ttl', 'home_folder_naming_rule', 'ldap_min_user_search_lenght', 'ldap_user_search_attr');
 
 OCP\Util::addscript('user_ldap', 'settings');
 OCP\Util::addstyle('user_ldap', 'settings');
@@ -73,5 +73,7 @@ $tmpl->assign( 'ldap_cache_ttl', OCP\Config::getAppValue('user_ldap', 'ldap_cach
 $hfnr = OCP\Config::getAppValue('user_ldap', 'home_folder_naming_rule', 'opt:username');
 $hfnr = ($hfnr == 'opt:username') ? '' : substr($hfnr, strlen('attr:'));
 $tmpl->assign( 'home_folder_naming_rule', $hfnr, '');
+$tmpl->assign( 'ldap_min_user_search_lenght', OCP\Config::getAppValue('user_ldap', 'ldap_min_user_search_lenght', '0'));
+$tmpl->assign( 'ldap_user_search_attr', OCP\Config::getAppValue('user_ldap', 'ldap_user_search_attr', ''));
 
 return $tmpl->fetchPage();

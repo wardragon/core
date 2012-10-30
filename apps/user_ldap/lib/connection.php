@@ -57,6 +57,8 @@ class Connection {
 		'ldapOverrideUuidAttribute' => null,
 		'homeFolderNamingRule' => null,
 		'hasPagedResultSupport' => false,
+		'ldapMinUserSearchLen' => null,
+		'ldapUserSearchAttr' => null,
 	);
 
 	public function __construct($configID = 'user_ldap') {
@@ -207,7 +209,9 @@ class Connection {
 			$this->config['ldapUuidAttribute']     = \OCP\Config::getAppValue($this->configID, 'ldap_uuid_attribute', 'auto');
 			$this->config['ldapOverrideUuidAttribute'] = \OCP\Config::getAppValue($this->configID, 'ldap_override_uuid_attribute', 0);
 			$this->config['homeFolderNamingRule']  = \OCP\Config::getAppValue($this->configID, 'home_folder_naming_rule', 'opt:username');
-
+			$this->config['ldapMinUserSearchLen']  = \OCP\Config::getAppValue($this->configID, 'ldap_min_user_search_lenght', 0);
+			$this->config['ldapUserSearchAttr']  = \OCP\Config::getAppValue($this->configID, 'ldap_user_search_attr', '');
+			
 			$this->configured = $this->validateConfiguration();
 		}
 	}
@@ -225,7 +229,7 @@ class Connection {
 
 		$params = array('ldap_host'=>'ldapHost', 'ldap_port'=>'ldapPort', 'ldap_dn'=>'ldapAgentName', 'ldap_agent_password'=>'ldapAgentPassword', 'ldap_base'=>'ldapBase', 'ldap_base_users'=>'ldapBaseUsers', 'ldap_base_groups'=>'ldapBaseGroups', 'ldap_userlist_filter'=>'ldapUserFilter', 'ldap_login_filter'=>'ldapLoginFilter', 'ldap_group_filter'=>'ldapGroupFilter', 'ldap_display_name'=>'ldapUserDisplayName', 'ldap_group_display_name'=>'ldapGroupDisplayName',
 
-		'ldap_tls'=>'ldapTLS', 'ldap_nocase'=>'ldapNoCase', 'ldap_quota_def'=>'ldapQuotaDefault', 'ldap_quota_attr'=>'ldapQuotaAttribute', 'ldap_email_attr'=>'ldapEmailAttribute', 'ldap_group_member_assoc_attribute'=>'ldapGroupMemberAssocAttr', 'ldap_cache_ttl'=>'ldapCacheTTL', 'home_folder_naming_rule' => 'homeFolderNamingRule');
+		'ldap_tls'=>'ldapTLS', 'ldap_nocase'=>'ldapNoCase', 'ldap_quota_def'=>'ldapQuotaDefault', 'ldap_quota_attr'=>'ldapQuotaAttribute', 'ldap_email_attr'=>'ldapEmailAttribute', 'ldap_group_member_assoc_attribute'=>'ldapGroupMemberAssocAttr', 'ldap_cache_ttl'=>'ldapCacheTTL', 'home_folder_naming_rule' => 'homeFolderNamingRule', 'ldap_min_user_search_lenght'=>'ldapMinUserSearchLen', 'ldap_user_search_attr'=>'ldapUserSearchAttr');
 
 		foreach($config as $parameter => $value) {
 		    if(isset($this->config[$parameter])) {

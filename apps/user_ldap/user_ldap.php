@@ -111,15 +111,17 @@ class USER_LDAP extends lib\Access implements \OCP\UserInterface {
 		if(!is_null($ldap_users)) {
 			return $ldap_users;
 		}
+		if (strlen($search) < $this->connection->ldapMinUserSearchLen) return null;
 
 		// if we'd pass -1 to LDAP search, we'd end up in a Protocol error. With a limit of 0, we get 0 results. So we pass null.
 		if($limit <= 0) {
 			$limit = null;
 		}
 		$search = empty($search) ? '*' : '*'.$search.'*';
+		$searchAttr = empty($this->connection->ldapUserSearchAttr)? $this->connection->ldapUserDisplayName: $this->connection->ldapUserSearchAttr; 
 		$filter = $this->combineFilterWithAnd(array(
 			$this->connection->ldapUserFilter,
-			$this->connection->ldapUserDisplayName.'='.$search
+			$searchAttr.'='.$search
 		));
 
 		\OCP\Util::writeLog('user_ldap', 'getUsers: Options: search '.$search.' limit '.$limit.' offset '.$offset.' Filter: '.$filter, \OCP\Util::DEBUG);
