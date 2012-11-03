@@ -166,6 +166,11 @@ abstract class Access {
 		if($dn) {
 			return $dn;
 		}
+		$dn_fromuid = $this->getUserDn($name);
+
+		if($dn_fromuid) {
+			return $dn_fromuid;
+		}
 
 		return false;
 	}
@@ -506,6 +511,17 @@ abstract class Access {
 	 */
 	public function searchGroups($filter, $attr = null, $limit = null, $offset = null) {
 		return $this->search($filter, $this->connection->ldapBaseGroups, $attr, $limit, $offset);
+	}
+
+	protected function getUserDn($uid) {
+		//find out dn of the user name
+		$filter = \OCP\Util::mb_str_replace('%uid', $uid, $this->connection->ldapLoginFilter, 'UTF-8');
+		$ldap_users = $this->fetchListOfUsers($filter, 'dn');
+		if(count($ldap_users) < 1) {
+			return false;
+		}
+		$dn = $ldap_users[0];
+		return $dn;
 	}
 
 	/**

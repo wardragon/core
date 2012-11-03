@@ -69,13 +69,13 @@ class USER_LDAP extends lib\Access implements \OCP\UserInterface {
 	 * Check if the password is correct without logging in the user
 	 */
 	public function checkPassword($uid, $password) {
-		//find out dn of the user name
-		$filter = \OCP\Util::mb_str_replace('%uid', $uid, $this->connection->ldapLoginFilter, 'UTF-8');
-		$ldap_users = $this->fetchListOfUsers($filter, 'dn');
-		if(count($ldap_users) < 1) {
+
+		$dn = $this->getUserDn($uid);
+
+		//does an entry for this user exist?
+		if (!$dn) {
 			return false;
 		}
-		$dn = $ldap_users[0];
 
 		//are the credentials OK?
 		if(!$this->areCredentialsValid($dn, $password)) {
